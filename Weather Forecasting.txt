@@ -1,0 +1,35 @@
+Weather forevasting to gra, w ktorej mozesz przewidziec/zgadywac jaka bedzie pogoda za x czasu. 
+
+Użytkownik może sprawdzic jaka pogoda (temperatura, kierunek wiatru, opady) była lub jest w danym mieście. Ma też dostęp do mapy.
+ 
+ZASADY:
+Musi on ustalić na podstawie dostępnych danych jaka pogoda będzie za określony przez niego czas w danym mieście.
+
+PUNKTY:
+Im lepiej przewidzi pogode i im późniejszą datę wybierze to ma więcej punktów.
+
+
+
+
+TODO:
+- JSON zwracajacy dane musi zwracac konkretniejsze dane
+- Sprawdzanie pogody jaka była lub jest w danym momencie gdzieś na świecie, aby mógł się sugerowac co do oceny
+	pogody w przyszłości
+- Uzytkownik wpisuje dane jakie przewiduje ze bedą i zapisywane są do bazy danych
+- Usuwanie wpisanych danych przez użytkownika jeśli chce
+- Sprawdzanie wyników jezeli już będzie ten dzien przewidziany przez uzytkownika
+- Ranking/punktacja - streak wygranych pod rząd, im dalsza data tym wiecej punktów,
+	im lepiej przewidziana pogoda to wiecej punktów, bardzo źle przewidziana pogoda punkty minusowe
+- Limit predykcji pogody na dzień
+- System rejestracji i logowania
+
+
+SHORT TODO:
+- System sprawdzajacy prognoze
+- System zarzadania punktacją
+- Logowanie/rejestrtacja
+
+
+TO GDZIE WŁAŚNIE SKOŃCZYŁEM:
+- W WeatherServiceImpl (komentarze)
+- zajmij sie tym zeby sprawdzac czy w bazie danych nie nastapił dzien prognozy pogody jezeli tak to sprawdz z danymi w api (hisorical) czy prognoza sie zgadza jezeli tak to dodaj punkty jezeli nie to odejmuj 
