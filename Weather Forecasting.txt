@@ -9,27 +9,43 @@ PUNKTY:
 Im lepiej przewidzi pogode i im późniejszą datę wybierze to ma więcej punktów.
 
 
-
+FUNKCJONALANOSC:
+- sprawdzanie aktualnej i historycznej pogody,
+- dodawanie predykcji pogodowej,
+- usuwanie predykcji pogodowej,
+- wyswietlanie listy predykcji pogodowej uzytkownika, jak i historie predyksci wraz z punktami,
+- ogólny score board,
+- wynik uzytkownika,
 
 TODO:
-- JSON zwracajacy dane musi zwracac konkretniejsze dane
-- Sprawdzanie pogody jaka była lub jest w danym momencie gdzieś na świecie, aby mógł się sugerowac co do oceny
-	pogody w przyszłości
-- Uzytkownik wpisuje dane jakie przewiduje ze bedą i zapisywane są do bazy danych
-- Usuwanie wpisanych danych przez użytkownika jeśli chce
-- Sprawdzanie wyników jezeli już będzie ten dzien przewidziany przez uzytkownika
-- Ranking/punktacja - streak wygranych pod rząd, im dalsza data tym wiecej punktów,
-	im lepiej przewidziana pogoda to wiecej punktów, bardzo źle przewidziana pogoda punkty minusowe
 - Limit predykcji pogody na dzień
 - System rejestracji i logowania
 
 
 SHORT TODO:
-- System sprawdzajacy prognoze
-- System zarzadania punktacją
 - Logowanie/rejestrtacja
+
+- przy dodawniu predykcji:
+	- sprawdz czy lokalizacja istenieje
+	- nie akceptuj przeszłej daty  
+
+
+DTO - Data Transfer Object - to obiekt, za pośrednictwem, którego udostępnia się jakieś dane zwykle na zewnątrz aplikacji - suche dane. 
+DAO - Data Access Object - czyli coś co zapewnia dostęp do źródła danych, nie ważne czy to z pliku czy to z bazy danych.
+
+interface PersonDTO {
+    String getName();
+    void setName(String name);
+    //.....
+}
+
+interface PersonDAO {
+    PersonDTO findById(long id);
+    void save(PersonDTO person);
+    //.....
+}
 
 
 TO GDZIE WŁAŚNIE SKOŃCZYŁEM:
-- W WeatherServiceImpl (komentarze)
-- zajmij sie tym zeby sprawdzac czy w bazie danych nie nastapił dzien prognozy pogody jezeli tak to sprawdz z danymi w api (hisorical) czy prognoza sie zgadza jezeli tak to dodaj punkty jezeli nie to odejmuj 
+- validacja w history
+

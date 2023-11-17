@@ -1,4 +1,4 @@
-package com.weatherForecasting.backend.user.model;
+package com.weatherForecasting.backend.results.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,8 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class UserScore {
-    //Musze polaczyc te baze danych z ecpected weather, aby zbierac punkty uzytkownika
+public class Score {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

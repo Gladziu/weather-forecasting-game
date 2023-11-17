@@ -3,39 +3,42 @@ package com.weatherForecasting.backend.weatherAPI.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.weatherForecasting.backend.weatherAPI.dto.Condition;
-import com.weatherForecasting.backend.weatherAPI.dto.ErrorMessage;
 import com.weatherForecasting.backend.weatherAPI.dto.WeatherDTO;
+import com.weatherForecasting.backend.weatherAPI.exception.ExceptionHandling;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 @Service
 @Slf4j
-public class WeatherServiceImpl implements WeatherService {
+public class WeatherApiServiceImpl implements WeatherApiService {
+    private static final String CURRENT_WEATHER_URL = "/current.json?key=";
+    private static final String HISTORY_WEATHER_URL = "/history.json?key=";
     @Value("${weather.api.key}")
     private String apiKey;
     @Value("${weather.api.url}")
     private String apiUrl;
     private final ObjectMapper objectMapper;
     private final WebClient webClient;
-    //TODO: ogarnij co to WebClient i Mono w jsonResponse -> https://tanzu.vmware.com/developer/guides/spring-webclient-gs/
-    //TODO: dodac najwazniejsze komentarze
+
     @Autowired
-    public WeatherServiceImpl(WebClient webClient, ObjectMapper objectMapper) {
+    public WeatherApiServiceImpl(WebClient webClient, ObjectMapper objectMapper) {
         this.webClient = webClient;
         this.objectMapper = objectMapper;
     }
 
     @Override
-    public  WeatherDTO getCurrentWeather(String location) {
-        String fullUrl = apiUrl + "/current.json?key=" + apiKey + "&q=" + location + "&aqi=no";
+    public WeatherDTO getCurrentWeather(String location) {
+        String fullUrl = apiUrl + CURRENT_WEATHER_URL + apiKey + "&q=" + location + "&aqi=no";
         Mono<String> jsonResponseMono = webClient.get()
                 .uri(fullUrl)
                 .retrieve()
@@ -49,10 +52,10 @@ public class WeatherServiceImpl implements WeatherService {
             JsonNode forecastLocation = rootNode.path("location");
             JsonNode forecastDetails = rootNode.path("current");
 
-            fillResultWithApiWeatherData(weatherDTO, forecastLocation, forecastDetails);
+            fillResultWithDataFromApi(weatherDTO, forecastLocation, forecastDetails);
 
         } catch (WebClientResponseException e) {
-            handleHttpClientError(weatherDTO, e);
+            ExceptionHandling.handleHttpClientException(weatherDTO, e, objectMapper);
 
         } catch (IOException e) {
             log.error("An error occurred while processing the request");
@@ -63,7 +66,16 @@ public class WeatherServiceImpl implements WeatherService {
 
     @Override
     public WeatherDTO getHistoricalWeather(String location, String date, String hour) {
-        String fullUrl = apiUrl + "/history.json?key=" + apiKey + "&q=" + location + "&dt=" + date;
+        WeatherDTO weatherDTO = areCorrectDateAndHour(location, date, hour);
+        if(weatherDTO != null) {
+            return weatherDTO;
+        }
+
+        return historicalWeather(location, date, hour);
+    }
+
+    private WeatherDTO historicalWeather(String location, String date, String hour) {
+        String fullUrl = apiUrl + HISTORY_WEATHER_URL + apiKey + "&q=" + location + "&dt=" + date;
         Mono<String> jsonResponseMono = webClient.get()
                 .uri(fullUrl)
                 .retrieve()
@@ -76,15 +88,15 @@ public class WeatherServiceImpl implements WeatherService {
             JsonNode forecastLocation = rootNode.path("location");
             JsonNode forecastDay = rootNode.path("forecast").path("forecastday").get(0);
 
-            JsonNode hourData = getrDataOfInputHour(forecastDay, hour);
+            JsonNode hourData = weatherWithEntryHour(forecastDay, hour);
             if(hourData != null) {
-                fillResultWithApiWeatherData(weatherDTO, forecastLocation, hourData);
+                fillResultWithDataFromApi(weatherDTO, forecastLocation, hourData);
             } else {
-                hourNotFound(weatherDTO);
+                return ExceptionHandling.errorMessage("Hour data not found.");
             }
 
         } catch (WebClientResponseException e) {
-            handleHttpClientError(weatherDTO, e);
+            ExceptionHandling.handleHttpClientException(weatherDTO, e, objectMapper);
 
         } catch (IOException e) {
             log.error("An error occurred while processing the request");
@@ -93,47 +105,63 @@ public class WeatherServiceImpl implements WeatherService {
         return weatherDTO;
     }
 
-    private void hourNotFound(WeatherDTO weatherDTO) {
-        weatherDTO.setError(new ErrorMessage());
-        weatherDTO.getError().setErrorCode(HttpStatus.NOT_FOUND.value());
-        weatherDTO.getError().setMessage("Hour not found");
+    private WeatherDTO areCorrectDateAndHour(String location, String date, String hour) {
+        try{
+            if (Integer.parseInt(hour) < 0 || Integer.parseInt(hour) > 24) {
+                return ExceptionHandling.errorMessage("Incorrect hour.");
+            }
 
-        log.error("Code: 404 Message: No matching hour found.");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate parsedDate = LocalDate.parse(date, formatter);
+
+            int endOfDateIndex = 10;
+            String actualDate = getCurrentWeather(location).getTime().substring(0, endOfDateIndex);
+            LocalDate parsedActualDate = LocalDate.parse(actualDate, formatter);
+
+            int week = 7;
+            if(!parsedDate.isBefore(parsedActualDate) || !parsedDate.isAfter(parsedActualDate.minusDays(week))) {
+                return ExceptionHandling.errorMessage("Possibility to check only the date 7 days ago.");
+            }
+            return null;
+
+        } catch (NumberFormatException e) {
+            return ExceptionHandling.errorMessage("Incorrect hour format.");
+        } catch (DateTimeParseException e) {
+            return ExceptionHandling.errorMessage("Incorrect date format.");
+        } catch (NullPointerException e) {
+            return ExceptionHandling.errorMessage("Incorrect location.");
+        }
     }
 
-    private JsonNode getrDataOfInputHour(JsonNode forecastDay, String hour) {
+    private JsonNode weatherWithEntryHour(JsonNode forecastDay, String hour) {
+        String correctHour = formatHour(hour);
         for (JsonNode hourData : forecastDay.path("hour")) {
             String time = hourData.path("time").asText();
-            if (time.startsWith(hour, 11)) {
+            int hourIndex = 11;
+            if (time.startsWith(correctHour, hourIndex)) {
                 return hourData;
             }
         }
         return null;
     }
 
-    private void handleHttpClientError(WeatherDTO weatherDTO, WebClientResponseException e) {
-        try {
-            JsonNode jsonError = objectMapper.readTree(e.getResponseBodyAsString());
-
-            int errorCode = e.getStatusCode().value();
-            String message = jsonError.path("error").path("message").asText();
-
-            weatherDTO.setError(new ErrorMessage());
-            weatherDTO.getError().setErrorCode(errorCode);
-            weatherDTO.getError().setMessage(message);
-
-            log.error("Code: " + errorCode + " Message: " + message);
-        } catch (IOException ex) {
-            log.error("Unable to parse error response from the API.");
+    private String formatHour(String hour) {
+        if(hour.length() == 1) {
+            return "0" + hour;
         }
+        if(hour.equals("24")) {
+            return "00";
+        }
+        return hour;
     }
 
-    private void fillResultWithApiWeatherData(WeatherDTO weatherDTO, JsonNode location, JsonNode details) {
-        weatherDTO.setCondition(new Condition());
+    private void fillResultWithDataFromApi(WeatherDTO weatherDTO, JsonNode location, JsonNode details) {
+
         // "local time" is for current weather
         // "time" is for historical weather
         weatherDTO.setTime(details.path("time").asText().equals("") ?
                 location.path("localtime").asText() : details.path("time").asText());
+
         weatherDTO.setCity(location.path("name").asText());
         weatherDTO.setCountry(location.path("country").asText());
         weatherDTO.setTemperature(details.path("temp_c").asDouble());
@@ -141,8 +169,11 @@ public class WeatherServiceImpl implements WeatherService {
         weatherDTO.setWindDirectory(details.path("wind_dir").asText());
         weatherDTO.setPressure(details.path("pressure_mb").asDouble());
         weatherDTO.setHumidity(details.path("humidity").asInt());
+
+        weatherDTO.setCondition(new Condition());
         weatherDTO.getCondition().setText(details.path("condition").path("text").asText());
         weatherDTO.getCondition().setIcon(details.path("condition").path("icon").asText());
+
         log.info("Fetching API weather data: " + location.path("name").asText());
     }
 }
