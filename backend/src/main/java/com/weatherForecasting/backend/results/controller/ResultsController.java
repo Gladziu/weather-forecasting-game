@@ -14,8 +14,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/weather")
 public class ResultsController {
-    @Autowired
-    private ResultsService resultsService;
+    private final ResultsService resultsService;
+
+    public ResultsController(ResultsService resultsService) {
+        this.resultsService = resultsService;
+    }
 
     @GetMapping("/score-board")
     public List<Score> getScoreBoard() {

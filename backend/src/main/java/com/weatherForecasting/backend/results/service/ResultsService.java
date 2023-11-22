@@ -7,8 +7,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.List;
 
 public interface ResultsService {
-    void weatherPredictionCheck();
-
     List<Score> getScoreBoard();
 
     int getUserScore(String userName);

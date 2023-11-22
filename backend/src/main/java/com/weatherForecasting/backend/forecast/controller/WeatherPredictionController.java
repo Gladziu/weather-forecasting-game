@@ -1,6 +1,7 @@
 package com.weatherForecasting.backend.forecast.controller;
 
 import com.weatherForecasting.backend.forecast.dto.WeatherPredictionDTO;
+import com.weatherForecasting.backend.forecast.model.WeatherPrediction;
 import com.weatherForecasting.backend.forecast.service.WeatherPredictionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/weather/prediction")
 public class WeatherPredictionController {
-    @Autowired
-    private WeatherPredictionService weatherPredictionService;
+
+    private final WeatherPredictionService weatherPredictionService;
+    public WeatherPredictionController(WeatherPredictionService weatherPredictionService){
+        this.weatherPredictionService = weatherPredictionService;
+    }
     //TODO: ogarnać cały ten cotnroller, czyli ustal czy korzystac z ResponseEntity
     @PostMapping("/add")
     public ResponseEntity<String> addPrediction(@RequestBody WeatherPredictionDTO weatherPredictionDTO) {

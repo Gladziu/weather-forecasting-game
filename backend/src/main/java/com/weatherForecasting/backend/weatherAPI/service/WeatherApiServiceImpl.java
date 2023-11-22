@@ -6,7 +6,6 @@ import com.weatherForecasting.backend.weatherAPI.dto.Condition;
 import com.weatherForecasting.backend.weatherAPI.dto.WeatherDTO;
 import com.weatherForecasting.backend.weatherAPI.exception.ExceptionHandling;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,20 +20,21 @@ import java.time.format.DateTimeParseException;
 @Service
 @Slf4j
 public class WeatherApiServiceImpl implements WeatherApiService {
-    private static final String CURRENT_WEATHER_URL = "/current.json?key=";
-    private static final String HISTORY_WEATHER_URL = "/history.json?key=";
-    @Value("${weather.api.key}")
-    private String apiKey;
-    @Value("${weather.api.url}")
-    private String apiUrl;
     private final ObjectMapper objectMapper;
     private final WebClient webClient;
 
-    @Autowired
     public WeatherApiServiceImpl(WebClient webClient, ObjectMapper objectMapper) {
         this.webClient = webClient;
         this.objectMapper = objectMapper;
     }
+
+    private static final String CURRENT_WEATHER_URL = "/current.json?key=";
+    private static final String HISTORY_WEATHER_URL = "/history.json?key=";
+
+    @Value("${weather.api.key}")
+    private String apiKey;
+    @Value("${weather.api.url}")
+    private String apiUrl;
 
     @Override
     public WeatherDTO getCurrentWeather(String location) {
@@ -67,7 +67,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     @Override
     public WeatherDTO getHistoricalWeather(String location, String date, String hour) {
         WeatherDTO weatherDTO = areCorrectDateAndHour(location, date, hour);
-        if(weatherDTO != null) {
+        if (weatherDTO != null) {
             return weatherDTO;
         }
 
@@ -89,7 +89,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
             JsonNode forecastDay = rootNode.path("forecast").path("forecastday").get(0);
 
             JsonNode hourData = weatherWithEntryHour(forecastDay, hour);
-            if(hourData != null) {
+            if (hourData != null) {
                 fillResultWithDataFromApi(weatherDTO, forecastLocation, hourData);
             } else {
                 return ExceptionHandling.errorMessage("Hour data not found.");
@@ -106,7 +106,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
 
     private WeatherDTO areCorrectDateAndHour(String location, String date, String hour) {
-        try{
+        try {
             if (Integer.parseInt(hour) < 0 || Integer.parseInt(hour) > 24) {
                 return ExceptionHandling.errorMessage("Incorrect hour.");
             }
@@ -119,7 +119,7 @@ public class WeatherApiServiceImpl implements WeatherApiService {
             LocalDate parsedActualDate = LocalDate.parse(actualDate, formatter);
 
             int week = 7;
-            if(!parsedDate.isBefore(parsedActualDate) || !parsedDate.isAfter(parsedActualDate.minusDays(week))) {
+            if (!parsedDate.isBefore(parsedActualDate) || !parsedDate.isAfter(parsedActualDate.minusDays(week))) {
                 return ExceptionHandling.errorMessage("Possibility to check only the date 7 days ago.");
             }
             return null;
@@ -146,10 +146,10 @@ public class WeatherApiServiceImpl implements WeatherApiService {
     }
 
     private String formatHour(String hour) {
-        if(hour.length() == 1) {
+        if (hour.length() == 1) {
             return "0" + hour;
         }
-        if(hour.equals("24")) {
+        if (hour.equals("24")) {
             return "00";
         }
         return hour;
