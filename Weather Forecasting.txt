@@ -11,9 +11,11 @@ Im lepiej przewidzi pogode i im późniejszą datę wybierze to ma więcej punkt
 
 FUNKCJONALANOSC:
 - sprawdzanie aktualnej i historycznej pogody,
+
 - dodawanie predykcji pogodowej,
 - usuwanie predykcji pogodowej,
 - wyswietlanie listy predykcji pogodowej uzytkownika, jak i historie predyksci wraz z punktami,
+
 - ogólny score board,
 - wynik uzytkownika,
 
@@ -28,6 +30,16 @@ SHORT TODO:
 - przy dodawniu predykcji:
 	- sprawdz czy lokalizacja istenieje
 	- nie akceptuj przeszłej daty  
+
+
+Przemyślec~Zmien pobieranie danych z API. WeatherRequestDAO > WeatherApiServiceImpl> WeatherResponseDTO > WeatherController
+
+
+
+
+TO GDZIE WŁAŚNIE SKOŃCZYŁEM:
+- validacja w history
+CHAT GTP, organizacja weatherApiServiceImpl (walidacja do util oraz DRY current i historical)
 
 
 DTO - Data Transfer Object - to obiekt, za pośrednictwem, którego udostępnia się jakieś dane zwykle na zewnątrz aplikacji - suche dane. 
@@ -45,7 +57,4 @@ interface PersonDAO {
     //.....
 }
 
-
-TO GDZIE WŁAŚNIE SKOŃCZYŁEM:
-- validacja w history
 

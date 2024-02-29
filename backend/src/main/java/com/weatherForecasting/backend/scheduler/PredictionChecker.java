@@ -1,15 +1,14 @@
 package com.weatherForecasting.backend.scheduler;
 
-import com.weatherForecasting.backend.forecast.model.WeatherPrediction;
-import com.weatherForecasting.backend.forecast.repository.WeatherPredictionRepository;
-import com.weatherForecasting.backend.results.model.History;
-import com.weatherForecasting.backend.results.model.Score;
-import com.weatherForecasting.backend.results.repository.HistoryRepository;
-import com.weatherForecasting.backend.results.repository.ScoreRepository;
-import com.weatherForecasting.backend.weatherAPI.dto.WeatherDTO;
-import com.weatherForecasting.backend.weatherAPI.service.WeatherApiService;
+import com.weatherForecasting.backend.weatherpredictioncrud.model.WeatherPrediction;
+import com.weatherForecasting.backend.weatherpredictioncrud.repository.WeatherPredictionRepository;
+import com.weatherForecasting.backend.resultchecker.model.History;
+import com.weatherForecasting.backend.resultchecker.model.Score;
+import com.weatherForecasting.backend.resultchecker.repository.HistoryRepository;
+import com.weatherForecasting.backend.resultchecker.repository.ScoreRepository;
+import com.weatherForecasting.backend.realweatherinfo.dto.WeatherDTO;
+import com.weatherForecasting.backend.realweatherinfo.service.WeatherApiService;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,12 +29,8 @@ public class PredictionChecker {
     private final HistoryRepository historyRepository;
     private final WeatherApiService weatherApiService;
 
-    @Autowired
-    public PredictionChecker(
-            WeatherPredictionRepository weatherPredictionRepository,
-            ScoreRepository scoreRepository,
-            HistoryRepository historyRepository,
-            WeatherApiService weatherApiService) {
+
+    public PredictionChecker(WeatherPredictionRepository weatherPredictionRepository, ScoreRepository scoreRepository, HistoryRepository historyRepository, WeatherApiService weatherApiService) {
         this.weatherPredictionRepository = weatherPredictionRepository;
         this.scoreRepository = scoreRepository;
         this.historyRepository = historyRepository;
@@ -50,14 +45,15 @@ public class PredictionChecker {
     private static final int MULTIPLIER_FOR_MODERATE_TEMP_DIFF = 2;
 
 
-    @Scheduled(cron = "0 5 * * * *")
     //@Scheduled(cron = "*/15 * * * * *")
+    @Scheduled(cron = "0 5 * * * *")
     public void weatherPredictionCheck() {
         log.info("Scheduler has just run the task");
         LocalDate currentTime = LocalDate.now(ZoneId.of("GMT+14")); // the latest possible date time in the world
         processWeatherPredictions(currentTime);
         log.info("Scheduler task has been completed successfully");
     }
+
 
     private void processWeatherPredictions(LocalDate currentTime) {
         List<WeatherPrediction> forecasts = weatherPredictionRepository.findByForecastDateLessThanEqual(currentTime);
