@@ -23,7 +23,7 @@ class WeatherPredictionReceiverValidator {
     private static final int MAX_HOUR_DIGITS = 2;
 
     List<ValidationError> errors = new ArrayList<>();
-    
+
     public ValidationResult validate(WeatherPredictionDTO weatherPredictionDTO) {
         if (!isDateInFuture(weatherPredictionDTO)) {
             errors.add(FUTURE_OR_INCORRECT_FORMAT_YYYY_MM_DD);
