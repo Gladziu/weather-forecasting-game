@@ -1,6 +1,6 @@
 package com.weatherForecasting.backend.resultchecker.model;
 
-import com.weatherForecasting.backend.weatherpredictioncrud.model.WeatherPrediction;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPrediction;
 import com.weatherForecasting.backend.realweatherinfo.dto.WeatherDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

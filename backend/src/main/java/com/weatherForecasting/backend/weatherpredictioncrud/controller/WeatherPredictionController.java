@@ -1,42 +1,39 @@
 package com.weatherForecasting.backend.weatherpredictioncrud.controller;
 
+import com.weatherForecasting.backend.weatherpredictioncrud.CrudOperationResult;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionCrudFacade;
 import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDTO;
-import com.weatherForecasting.backend.weatherpredictioncrud.service.WeatherPredictionService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/weather/prediction")
+@RequestMapping("/weather-prediction")
 public class WeatherPredictionController {
 
-    private final WeatherPredictionService weatherPredictionService;
+    private final WeatherPredictionCrudFacade weatherPredictionCrudFacade;
 
-    public WeatherPredictionController(WeatherPredictionService weatherPredictionService) {
-        this.weatherPredictionService = weatherPredictionService;
+    public WeatherPredictionController(WeatherPredictionCrudFacade weatherPredictionCrudFacade) {
+        this.weatherPredictionCrudFacade = weatherPredictionCrudFacade;
     }
 
-    //TODO: ogarnać cały ten cotnroller, czyli ustal czy korzystac z ResponseEntity
     @PostMapping("/add")
-    public ResponseEntity<String> addPrediction(@RequestBody WeatherPredictionDTO weatherPredictionDTO) {
-        weatherPredictionService.addPrediction(weatherPredictionDTO);
-        return ResponseEntity.ok("User prediction successfully added.");
+    public ResponseEntity<CrudOperationResult> addPrediction(@RequestBody WeatherPredictionDTO weatherPredictionDTO) {
+        CrudOperationResult crudOperationResult = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
+        return ResponseEntity.ok(crudOperationResult);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deletePrediction(@RequestParam Long id) {
-        boolean isDeleted = weatherPredictionService.deletePrediction(id);
-        if (isDeleted) {
-            return ResponseEntity.ok("Deleted weather prediction with id=" + id);
-        } else {
-            return new ResponseEntity<>("Delete error. Can not find weather prediction with id=" + id, HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<CrudOperationResult> deletePrediction(@RequestParam UUID id) {
+        CrudOperationResult crudOperationResult = weatherPredictionCrudFacade.deletePrediction(id);
+        return ResponseEntity.ok(crudOperationResult);
     }
 
     @GetMapping("/show")
-    public List<WeatherPredictionDTO> showPrediction(@RequestParam String username) {
-        return weatherPredictionService.showPrediction(username);
+    public ResponseEntity<List<WeatherPredictionDTO>> showPrediction(@RequestParam String username) {
+        List<WeatherPredictionDTO> weatherPredictionDTOS = weatherPredictionCrudFacade.showPrediction(username);
+        return ResponseEntity.ok(weatherPredictionDTOS);
     }
 }

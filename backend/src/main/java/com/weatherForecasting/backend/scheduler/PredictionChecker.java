@@ -1,7 +1,7 @@
 package com.weatherForecasting.backend.scheduler;
 
-import com.weatherForecasting.backend.weatherpredictioncrud.model.WeatherPrediction;
-import com.weatherForecasting.backend.weatherpredictioncrud.repository.WeatherPredictionRepository;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPrediction;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionRepository;
 import com.weatherForecasting.backend.resultchecker.model.History;
 import com.weatherForecasting.backend.resultchecker.model.Score;
 import com.weatherForecasting.backend.resultchecker.repository.HistoryRepository;

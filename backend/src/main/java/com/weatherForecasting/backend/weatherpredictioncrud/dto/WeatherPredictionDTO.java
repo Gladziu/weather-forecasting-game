@@ -1,19 +1,10 @@
 package com.weatherForecasting.backend.weatherpredictioncrud.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.time.LocalDate;
+import java.util.UUID;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-public class WeatherPredictionDTO {
-    private long id;
-    private String username;
-    private String location;
-    private double temperature;
-    private String forecastDate;
-    private String forecastHour;
+public record WeatherPredictionDTO(UUID id, String username, String location, double temperature, String forecastDate, String forecastHour, LocalDate timeStamp) {
+    public WeatherPredictionDTO(String username, String location, double temperature, String forecastDate, String forecastHour) {
+        this(UUID.randomUUID(), username, location, temperature, forecastDate, forecastHour, null);
+    }
 }
