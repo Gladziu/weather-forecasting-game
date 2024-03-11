@@ -1,7 +1,7 @@
 package com.weatherForecasting.backend.resultchecker.model;
 
 import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPrediction;
-import com.weatherForecasting.backend.realweatherinfo.dto.WeatherDTO;
+import com.weatherForecasting.backend.realweatherprovider.dto.RealWeatherDto;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -30,13 +30,13 @@ public class History {
     public History() {
     }
 
-    public History(WeatherPrediction forecast, WeatherDTO actual, int scored) {
+    public History(WeatherPrediction forecast, RealWeatherDto actual, int scored) {
         this.username = forecast.getUsername();
         this.location = forecast.getLocation();
         this.temperature = forecast.getTemperature();
-        this.realTemperature = actual.getTemperature();
+        this.realTemperature = actual.temperature();
         this.forecastDate = forecast.getForecastDate();
-        this.forecastHour = forecast.getForecastHour();
+        this.forecastHour = String.valueOf(forecast.getForecastHour()); // TODO: REMEMBER THATH IT SHOULD BE INT
         this.timeStamp = forecast.getTimeStamp();
         this.points = scored;
     }

@@ -6,7 +6,7 @@ import com.weatherForecasting.backend.resultchecker.model.Score;
 import java.util.List;
 
 public interface ResultsService {
-    List<Score> getScoreBoard();
+    List<Score> getScoreboard();
 
     int getUserScore(String userName);
 

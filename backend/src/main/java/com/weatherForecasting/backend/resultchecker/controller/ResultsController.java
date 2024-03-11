@@ -4,14 +4,12 @@ import com.weatherForecasting.backend.resultchecker.dto.HistoryDTO;
 import com.weatherForecasting.backend.resultchecker.model.Score;
 import com.weatherForecasting.backend.resultchecker.service.ResultsService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/weather")
 public class ResultsController {
     private final ResultsService resultsService;
 
@@ -19,17 +17,17 @@ public class ResultsController {
         this.resultsService = resultsService;
     }
 
-    @GetMapping("/score-board")
-    public List<Score> getScoreBoard() {
-        return resultsService.getScoreBoard();
+    @GetMapping("/scoreboard")
+    public List<Score> getScoreboard() {
+        return resultsService.getScoreboard();
     }
 
-    @GetMapping("/user/results")
+    @GetMapping("/user-score")
     public int getUserScore(@RequestParam String username) {
         return resultsService.getUserScore(username);
     }
 
-    @GetMapping("/user/prediction/history")
+    @GetMapping("/history")
     public List<HistoryDTO> getHistoricalPrediction(@RequestParam String username) {
         return resultsService.getHistoricalPrediction(username);
     }

@@ -1,59 +1,67 @@
 package com.weatherForecasting.backend.weatherpredictioncrud;
 
-import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDTO;
+import com.weatherForecasting.backend.realweatherprovider.RealWeatherFacade;
+import com.weatherForecasting.backend.realweatherprovider.dto.LocalTimeDto;
+import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDto;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 class WeatherPredictionCrudFacadeTest {
-    WeatherPredictionRepository repository = new WeatherPredictionRepositoryTestImpl();
-    WeatherPredictionCrudFacade weatherPredictionCrudFacade = new WeatherPredictionConfiguration().WeatherPredictionCrudFacadeForTest(repository);
-    String date = FutureDateGeneratorForTest.dateInFiveDays();
+    WeatherPredictionCrudRepository repository = new WeatherPredictionCrudRepositoryTestImpl();
+    RealWeatherFacade realWeather = Mockito.mock(RealWeatherFacade.class);
+    WeatherPredictionCrudFacade weatherPredictionCrudFacade = new WeatherPredictionCrudConfiguration().weatherPredictionCrudFacadeForTest(repository, realWeather);
+
+    LocalDate date = FutureDateGeneratorForTest.dateInFiveDays();
 
     @Test
-    public void add_prediction_should_return_failure_when_given_hour_is_in_wrong_format() {
+    public void add_prediction_should_return_failure_when_given_hour_is_in_wrong_range() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "123");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 123);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
         //then
-        assertThat(result.message()).isEqualTo("incorrect hour format HH or H");
+        assertThat(result.message()).isEqualTo("hour out of range");
     }
 
     @Test
     public void add_prediction_should_return_failure_when_given_date_is_in_past() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, "2023-12-12", "12");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, LocalDate.of(2023, 1, 1), 12);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
         //then
-        assertThat(result.message()).isEqualTo("date must be in the future or incorrect format yyyy-MM-dd");
+        assertThat(result.message()).isEqualTo("date must be in the future");
     }
 
     @Test
-    public void add_prediction_should_return_failure_when_given_date_is_in_wrong_format() {
+    public void add_prediction_should_return_failure_when_given_location_does_not_exist() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, "10.01.2024", "12");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 123);
+        when(realWeather.locationLocalTime(any())).thenReturn(LocalTimeDto.builder().failure(true).build());
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
         //then
-        assertThat(result.message()).isEqualTo("date must be in the future or incorrect format yyyy-MM-dd");
+        assertThat(result.message()).isEqualTo("location not found");
     }
 
     @Test
     public void add_prediction_should_return_failure_when_given_temperature_is_impossibly_high() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 999, date, "12");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 999, date, 12);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
@@ -64,8 +72,8 @@ class WeatherPredictionCrudFacadeTest {
     @Test
     public void add_prediction_should_return_failure_when_given_temperature_is_impossibly_low() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", -999, date, "12");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", -999, date, 12);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
@@ -76,20 +84,8 @@ class WeatherPredictionCrudFacadeTest {
     @Test
     public void add_prediction_should_return_success_when_given_correct_weather_prediction() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "15");
-
-        //when
-        CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
-
-        //then
-        assertThat(result.message()).isEqualTo("weather prediction successfully added");
-    }
-
-    @Test
-    public void add_prediction_should_return_success_when_given_prediction_with_one_digit_hour() {
-        //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "9");
-
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 15);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
 
@@ -102,15 +98,16 @@ class WeatherPredictionCrudFacadeTest {
         //given
         String userName = "joe";
 
-        WeatherPredictionDTO weatherPredictionDTO_joe1 = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "15");
-        WeatherPredictionDTO weatherPredictionDTO_joe2 = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "15");
-        WeatherPredictionDTO weatherPredictionDTO_tom = new WeatherPredictionDTO("tom", "Paris", 9.9, date, "15");
-        weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO_joe1);
-        weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO_joe2);
-        weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO_tom);
+        WeatherPredictionDto weatherPredictionDto_joe1 = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 15);
+        WeatherPredictionDto weatherPredictionDto_joe2 = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 15);
+        WeatherPredictionDto weatherPredictionDto_tom = new WeatherPredictionDto("tom", "Paris", 9.9, date, 15);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
+        weatherPredictionCrudFacade.addPrediction(weatherPredictionDto_joe1);
+        weatherPredictionCrudFacade.addPrediction(weatherPredictionDto_joe2);
+        weatherPredictionCrudFacade.addPrediction(weatherPredictionDto_tom);
 
         //when
-        List<WeatherPredictionDTO> results = weatherPredictionCrudFacade.showPrediction(userName);
+        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPrediction(userName);
 
         //then
         assertThat(results.size()).isEqualTo(2);
@@ -120,7 +117,7 @@ class WeatherPredictionCrudFacadeTest {
     public void should_return_no_weather_predictions_when_user_has_not_played() {
         //given
         //when
-        List<WeatherPredictionDTO> results = weatherPredictionCrudFacade.showPrediction("joe");
+        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPrediction("joe");
 
         //then
         assertThat(results.size()).isEqualTo(0);
@@ -129,11 +126,13 @@ class WeatherPredictionCrudFacadeTest {
     @Test
     void delete_weather_prediction_should_return_success_when_given_id() {
         //given
-        WeatherPredictionDTO weatherPredictionDTO = new WeatherPredictionDTO("joe", "Warsaw", 10.4, date, "15");
+        WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 15);
+        when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
-
+        List<WeatherPredictionDto> predictionDTOS = weatherPredictionCrudFacade.showPrediction("joe");
+        UUID weatherPredictionId = predictionDTOS.get(0).id();
         //when
-        CrudOperationResult result = weatherPredictionCrudFacade.deletePrediction(weatherPredictionDTO.id());
+        CrudOperationResult result = weatherPredictionCrudFacade.deletePrediction(weatherPredictionId);
 
         //then
         assertThat(result.message()).isEqualTo("weather prediction deleted");

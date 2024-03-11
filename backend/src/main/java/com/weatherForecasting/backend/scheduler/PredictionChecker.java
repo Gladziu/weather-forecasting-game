@@ -1,13 +1,13 @@
 package com.weatherForecasting.backend.scheduler;
 
-import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPrediction;
-import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionRepository;
+import com.weatherForecasting.backend.realweatherprovider.dto.RealWeatherDto;
+import com.weatherForecasting.backend.realweatherprovider.RealWeatherFacade;
 import com.weatherForecasting.backend.resultchecker.model.History;
 import com.weatherForecasting.backend.resultchecker.model.Score;
 import com.weatherForecasting.backend.resultchecker.repository.HistoryRepository;
 import com.weatherForecasting.backend.resultchecker.repository.ScoreRepository;
-import com.weatherForecasting.backend.realweatherinfo.dto.WeatherDTO;
-import com.weatherForecasting.backend.realweatherinfo.service.WeatherApiService;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPrediction;
+import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionCrudRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,17 +24,17 @@ import static java.time.temporal.ChronoUnit.DAYS;
 @EnableScheduling
 @Slf4j
 public class PredictionChecker {
-    private final WeatherPredictionRepository weatherPredictionRepository;
+    private final WeatherPredictionCrudRepository weatherPredictionCrudRepository;
     private final ScoreRepository scoreRepository;
     private final HistoryRepository historyRepository;
-    private final WeatherApiService weatherApiService;
+    private final RealWeatherFacade realWeatherFacade;
 
 
-    public PredictionChecker(WeatherPredictionRepository weatherPredictionRepository, ScoreRepository scoreRepository, HistoryRepository historyRepository, WeatherApiService weatherApiService) {
-        this.weatherPredictionRepository = weatherPredictionRepository;
+    public PredictionChecker(WeatherPredictionCrudRepository weatherPredictionCrudRepository, ScoreRepository scoreRepository, HistoryRepository historyRepository, RealWeatherFacade realWeatherFacade) {
+        this.weatherPredictionCrudRepository = weatherPredictionCrudRepository;
         this.scoreRepository = scoreRepository;
         this.historyRepository = historyRepository;
-        this.weatherApiService = weatherApiService;
+        this.realWeatherFacade = realWeatherFacade;
     }
 
     private static final int MAX_ALLOWED_TEMP_DIFF = 10;
@@ -56,9 +56,9 @@ public class PredictionChecker {
 
 
     private void processWeatherPredictions(LocalDate currentTime) {
-        List<WeatherPrediction> forecasts = weatherPredictionRepository.findByForecastDateLessThanEqual(currentTime);
+        List<WeatherPrediction> forecasts = weatherPredictionCrudRepository.findByForecastDateLessThanEqual(currentTime);
         for (WeatherPrediction forecast : forecasts) {
-            WeatherDTO currentWeather = weatherApiService.getCurrentWeather(forecast.getLocation());
+            RealWeatherDto currentWeather = realWeatherFacade.getCurrentWeather(forecast.getLocation());
             if (!areDatesEqualWithoutMinutes(forecast, currentWeather)) {
                 continue;
             }
@@ -67,15 +67,15 @@ public class PredictionChecker {
         }
     }
 
-    private void moveToHistory(WeatherPrediction forecast, WeatherDTO actual, int scored) {
+    private void moveToHistory(WeatherPrediction forecast, RealWeatherDto actual, int scored) {
         History history = new History(forecast, actual, scored);
         historyRepository.save(history);
-        weatherPredictionRepository.delete(forecast);
+        weatherPredictionCrudRepository.delete(forecast);
         log.info("Forecast moved to history and added points.");
     }
 
-    private int scoreAssign(WeatherPrediction forecast, WeatherDTO actual) {
-        double tempDiff = Math.abs(forecast.getTemperature() - actual.getTemperature());
+    private int scoreAssign(WeatherPrediction forecast, RealWeatherDto actual) {
+        double tempDiff = Math.abs(forecast.getTemperature() - actual.temperature());
         int daysBetween = (int) DAYS.between(forecast.getTimeStamp(), forecast.getForecastDate());
         int score = pointsScored(daysBetween, tempDiff);
 
@@ -112,9 +112,10 @@ public class PredictionChecker {
         return (int) (daysBetween / tempDiff);
     }
 
-    private boolean areDatesEqualWithoutMinutes(WeatherPrediction userForecast, WeatherDTO actual) {
+    private boolean areDatesEqualWithoutMinutes(WeatherPrediction userForecast, RealWeatherDto actual) {
         String date = userForecast.getForecastDate() + " " + userForecast.getForecastHour();
-        String currentDate = actual.getTime();
+        //String currentDate = actual.getTime();
+        String currentDate = "2024-12-12 12:12";
         int withoutMinutes = currentDate.length() - 3;
 
         return date.substring(0, withoutMinutes).equals(currentDate.substring(0, withoutMinutes));

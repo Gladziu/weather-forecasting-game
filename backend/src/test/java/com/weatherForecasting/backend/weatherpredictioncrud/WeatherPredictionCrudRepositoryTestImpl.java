@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-class WeatherPredictionRepositoryTestImpl implements WeatherPredictionRepository {
+class WeatherPredictionCrudRepositoryTestImpl implements WeatherPredictionCrudRepository {
 
     Map<UUID, WeatherPrediction> database = new ConcurrentHashMap<>();
 

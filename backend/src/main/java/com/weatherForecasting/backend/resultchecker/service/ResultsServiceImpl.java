@@ -26,7 +26,7 @@ public class ResultsServiceImpl implements ResultsService {
     }
 
     @Override
-    public List<Score> getScoreBoard() {
+    public List<Score> getScoreboard() {
         return scoreRepository.findAll();
     }
 
