@@ -17,7 +17,7 @@ import static org.mockito.Mockito.when;
 
 class RealWeatherFacadeTest {
     RealWeatherApiReceiver realWeatherApiReceiver = Mockito.mock(RealWeatherApiReceiver.class);
-    RealWeatherFacade realWeatherFacade = new RealWeatherConfiguration().realWeatherInfoFacadeForTest(realWeatherApiReceiver);
+    RealWeatherFacade realWeatherFacade = new RealWeatherConfiguration().realWeatherFacadeForTest(realWeatherApiReceiver);
 
     @Test
     public void get_current_weather_should_return_location_not_found_when_given_incorrect_location() {

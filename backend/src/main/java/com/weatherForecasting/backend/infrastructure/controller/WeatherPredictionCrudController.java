@@ -1,4 +1,4 @@
-package com.weatherForecasting.backend.weatherpredictioncrud.controller;
+package com.weatherForecasting.backend.infrastructure.controller;
 
 import com.weatherForecasting.backend.weatherpredictioncrud.CrudOperationResult;
 import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionCrudFacade;
@@ -33,7 +33,7 @@ public class WeatherPredictionCrudController {
 
     @GetMapping("/show")
     public ResponseEntity<List<WeatherPredictionDto>> showPrediction(@RequestParam String username) {
-        List<WeatherPredictionDto> weatherPredictionDtos = weatherPredictionCrudFacade.showPrediction(username);
+        List<WeatherPredictionDto> weatherPredictionDtos = weatherPredictionCrudFacade.showPredictions(username);
         return ResponseEntity.ok(weatherPredictionDtos);
     }
 }

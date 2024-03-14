@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RealWeatherConfiguration {
     @Bean
-    RealWeatherFacade realWeatherInfoFacade() {
+    RealWeatherFacade realWeatherFacade() {
         RealWeatherApiReceiver realWeatherApiReceiver = new RealWeatherApiReceiver();
         RealWeatherValidator validator = new RealWeatherValidator();
         return new RealWeatherFacade(realWeatherApiReceiver, validator);
     }
 
-    RealWeatherFacade realWeatherInfoFacadeForTest(RealWeatherApiReceiver realWeatherApiReceiver) {
+    RealWeatherFacade realWeatherFacadeForTest(RealWeatherApiReceiver realWeatherApiReceiver) {
         RealWeatherValidator validator = new RealWeatherValidator();
         return new RealWeatherFacade(realWeatherApiReceiver, validator);
     }

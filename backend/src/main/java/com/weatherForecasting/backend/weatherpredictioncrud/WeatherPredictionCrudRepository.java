@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface WeatherPredictionCrudRepository extends JpaRepository<WeatherPrediction, UUID> {
+interface WeatherPredictionCrudRepository extends JpaRepository<WeatherPrediction, UUID> {
     List<WeatherPrediction> findByForecastDateLessThanEqual(LocalDate forecastDate);
 
     List<WeatherPrediction> findAllByUsername(String username);

@@ -4,6 +4,7 @@ import com.weatherForecasting.backend.realweatherprovider.RealWeatherFacade;
 import com.weatherForecasting.backend.realweatherprovider.dto.LocalTimeDto;
 import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDto;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,7 +36,7 @@ public class WeatherPredictionCrudFacade {
         return new CrudOperationResult(message);
     }
 
-    public List<WeatherPredictionDto> showPrediction(String userName) {
+    public List<WeatherPredictionDto> showPredictions(String userName) {
         List<WeatherPrediction> predictions = weatherPredictionCrudRepository.findAllByUsername(userName);
         return WeatherPredictionMapper.mapToDTOs(predictions);
     }
@@ -46,6 +47,11 @@ public class WeatherPredictionCrudFacade {
             return new CrudOperationResult(DELETED_WEATHER_PREDICTION);
         }
         return new CrudOperationResult(DELETE_ERROR);
+    }
+
+    public List<WeatherPredictionDto> getPredictionsInTheDateScope(LocalDate date) {
+        List<WeatherPrediction> predictions = weatherPredictionCrudRepository.findByForecastDateLessThanEqual(date);
+        return WeatherPredictionMapper.mapToDTOs(predictions);
     }
 
 }

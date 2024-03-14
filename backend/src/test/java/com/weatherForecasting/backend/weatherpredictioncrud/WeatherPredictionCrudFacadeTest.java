@@ -107,7 +107,7 @@ class WeatherPredictionCrudFacadeTest {
         weatherPredictionCrudFacade.addPrediction(weatherPredictionDto_tom);
 
         //when
-        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPrediction(userName);
+        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPredictions(userName);
 
         //then
         assertThat(results.size()).isEqualTo(2);
@@ -117,7 +117,7 @@ class WeatherPredictionCrudFacadeTest {
     public void should_return_no_weather_predictions_when_user_has_not_played() {
         //given
         //when
-        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPrediction("joe");
+        List<WeatherPredictionDto> results = weatherPredictionCrudFacade.showPredictions("joe");
 
         //then
         assertThat(results.size()).isEqualTo(0);
@@ -129,7 +129,7 @@ class WeatherPredictionCrudFacadeTest {
         WeatherPredictionDto weatherPredictionDTO = new WeatherPredictionDto("joe", "Warsaw", 10.4, date, 15);
         when(realWeather.locationLocalTime(any())).thenReturn(new LocalTimeDto(LocalDate.now(), false));
         weatherPredictionCrudFacade.addPrediction(weatherPredictionDTO);
-        List<WeatherPredictionDto> predictionDTOS = weatherPredictionCrudFacade.showPrediction("joe");
+        List<WeatherPredictionDto> predictionDTOS = weatherPredictionCrudFacade.showPredictions("joe");
         UUID weatherPredictionId = predictionDTOS.get(0).id();
         //when
         CrudOperationResult result = weatherPredictionCrudFacade.deletePrediction(weatherPredictionId);

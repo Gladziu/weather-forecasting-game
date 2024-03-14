@@ -2,12 +2,10 @@ package com.weatherForecasting.backend.realweatherprovider;
 
 import com.weatherForecasting.backend.realweatherprovider.dto.*;
 import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDto;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.net.URI;
 
-@Slf4j
 public class RealWeatherFacade {
     @Value("${weather.api.key}")
     private String apiKey;
@@ -30,7 +28,7 @@ public class RealWeatherFacade {
                     .error(message)
                     .build();
         }
-        return RealWeatherMapper.mapCurrentWeatherToRealWeather(currentWeather);
+        return RealWeatherMapper.mapCurrentWeatherToRealWeatherDto(currentWeather);
     }
 
     public RealWeatherDto getHistoricalWeather(String location, String date, int hour) {
@@ -49,7 +47,7 @@ public class RealWeatherFacade {
                     .error(message)
                     .build();
         }
-        return RealWeatherMapper.mapHistoricalWeatherToRealWeather(historicalWeather, hour);
+        return RealWeatherMapper.mapHistoricalWeatherToRealWeatherDto(historicalWeather, hour);
     }
 
     public LocalTimeDto locationLocalTime(WeatherPredictionDto weatherPrediction) {
@@ -61,7 +59,18 @@ public class RealWeatherFacade {
                     .failure(true)
                     .build();
         }
-        return RealWeatherMapper.createRealLocalTime(currentWeather);
+        return RealWeatherMapper.mapCurrentWeatherToLocalTimeDto(currentWeather);
+    }
+
+    public WeatherReportDto getWeatherReport(String location) {
+        URI uri = ApiUriGenerator.currentWeatherUri(location, apiKey, apiUrl);
+        CurrentWeatherDto currentWeather = realWeatherApiReceiver.currentWeatherApiResponse(uri);
+        if (currentWeather.isFailure()) {
+            return WeatherReportDto.builder()
+                    .failure(true)
+                    .build();
+        }
+        return RealWeatherMapper.mapCurrentWeatherToWeatherReportDto(currentWeather);
     }
 
 }

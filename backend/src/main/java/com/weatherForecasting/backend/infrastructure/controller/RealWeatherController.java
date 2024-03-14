@@ -1,4 +1,4 @@
-package com.weatherForecasting.backend.realweatherprovider.controller;
+package com.weatherForecasting.backend.infrastructure.controller;
 
 import com.weatherForecasting.backend.realweatherprovider.RealWeatherFacade;
 import com.weatherForecasting.backend.realweatherprovider.dto.RealWeatherDto;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class WeatherApiController {
+public class RealWeatherController {
     private final RealWeatherFacade realWeatherFacade;
 
-    public WeatherApiController(RealWeatherFacade realWeatherFacade) {
+    public RealWeatherController(RealWeatherFacade realWeatherFacade) {
         this.realWeatherFacade = realWeatherFacade;
     }
 
