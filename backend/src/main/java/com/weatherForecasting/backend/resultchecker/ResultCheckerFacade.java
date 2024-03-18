@@ -1,58 +1,38 @@
 package com.weatherForecasting.backend.resultchecker;
 
+import com.weatherForecasting.backend.historicalpredictioncr.HistoricalPredictionCrFacade;
 import com.weatherForecasting.backend.resultchecker.dto.CheckedPredictionDto;
-import com.weatherForecasting.backend.resultchecker.dto.HistoryResultDto;
-import com.weatherForecasting.backend.resultchecker.dto.PredictionScoreDto;
-import com.weatherForecasting.backend.resultchecker.dto.ResultDto;
-import com.weatherForecasting.backend.weatherpredictioncrud.WeatherPredictionCrudFacade;
-import com.weatherForecasting.backend.weatherpredictioncrud.dto.WeatherPredictionDto;
+import com.weatherForecasting.backend.scoremanagementcru.ScoreManagementCruFacade;
+import com.weatherForecasting.backend.scoremanagementcru.dto.PredictionScoreDto;
+import com.weatherForecasting.backend.weatherpredictioncrd.WeatherPredictionCrdFacade;
+import com.weatherForecasting.backend.weatherpredictioncrd.dto.WeatherPredictionDto;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
-import java.util.Optional;
 
 public class ResultCheckerFacade {
-
-    private final ResultRepository resultRepository;
-    private final HistoryResultRepository historyResultRepository;
-    private final WeatherPredictionCrudFacade weatherPredictionCrudFacade;
+    private final static String LATEST_POSSIBLE_DATE = "GMT-12";
+    private final WeatherPredictionCrdFacade weatherPredictionCrdFacade;
     private final WeatherComparator weatherComparator;
-    private final ResultAssigner resultAssigner;
-    private final HistoryResultManager historyResultManager;
+    private final ScoreManagementCruFacade scoreManagementCruFacade;
+    private final HistoricalPredictionCrFacade historicalPredictionCrFacade;
 
-    public ResultCheckerFacade(ResultRepository resultRepository, HistoryResultRepository historyResultRepository, WeatherPredictionCrudFacade weatherPredictionCrudFacade, WeatherComparator weatherComparator, ResultAssigner resultAssigner, HistoryResultManager historyResultManager) {
-        this.resultRepository = resultRepository;
-        this.historyResultRepository = historyResultRepository;
-        this.weatherPredictionCrudFacade = weatherPredictionCrudFacade;
+    public ResultCheckerFacade(WeatherPredictionCrdFacade weatherPredictionCrdFacade, WeatherComparator weatherComparator, ScoreManagementCruFacade scoreManagementCruFacade, HistoricalPredictionCrFacade historicalPredictionCrFacade) {
+        this.weatherPredictionCrdFacade = weatherPredictionCrdFacade;
         this.weatherComparator = weatherComparator;
-        this.resultAssigner = resultAssigner;
-        this.historyResultManager = historyResultManager;
+        this.scoreManagementCruFacade = scoreManagementCruFacade;
+        this.historicalPredictionCrFacade = historicalPredictionCrFacade;
     }
 
-    public List<ResultDto> getScoreboard() {
-        List<Result> results = resultRepository.findAll();
-        return ResultCheckerMapper.mapToResultsDto(results);
-    }
 
-    public int getUserScore(String username) {
-        Optional<Result> userResult = resultRepository.findByUsername(username);
-        return ResultCheckerMapper.createUserScore(userResult);
-    }
-
-    public List<HistoryResultDto> getHistoricalPrediction(String username) {
-        List<HistoryResult> historyResults = historyResultRepository.findAllByUsername(username);
-        return ResultCheckerMapper.mapToHistoryResultsDto(historyResults);
-    }
-
-    public void processWeatherPredictionResults(LocalDate cutoffDate) {
-        List<WeatherPredictionDto> predictions = weatherPredictionCrudFacade.getPredictionsInTheDateScope(cutoffDate);
+    public void processWeatherPredictionResults() {
+        LocalDate cutoffDate = LocalDate.now(ZoneId.of(LATEST_POSSIBLE_DATE));
+        List<WeatherPredictionDto> predictions = weatherPredictionCrdFacade.getPredictionsInTheDateScope(cutoffDate);
         if (!predictions.isEmpty()) {
             List<CheckedPredictionDto> checkedPredictions = weatherComparator.comparePredictionWithRealWeather(predictions);
-            // List<PredictionScoreDto> predictionsWithScore = scoreSystemCruFacade.assignScoredPoints(checkedPredictions);
-            // historicalWeatherPredictionCrFacade.movePredictionToHistory(predictionsWithScore);
-            List<PredictionScoreDto> predictionsWithScore = ResultCalculator.calculateScoredPoints(checkedPredictions);
-            resultAssigner.assignScoredPoints(predictionsWithScore);
-            historyResultManager.movePredictionToHistory(predictionsWithScore);
+            List<PredictionScoreDto> predictionsWithScore = scoreManagementCruFacade.saveScoredPoints(checkedPredictions);
+            historicalPredictionCrFacade.movePredictionToHistory(predictionsWithScore);
         }
     }
 }

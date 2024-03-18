@@ -38,7 +38,7 @@ Przemyślec~Zmien pobieranie danych z API. WeatherRequestDAO > WeatherApiService
 
 
 TO GDZIE WŁAŚNIE SKOŃCZYŁEM:
-- validacja w history
+- validacja w predictionHistory
 CHAT GTP, organizacja weatherApiServiceImpl (walidacja do util oraz DRY current i historical)
 
 
