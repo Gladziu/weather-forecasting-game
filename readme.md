@@ -1,4 +1,4 @@
 # Weather Forecasting Game
 
 ## C3 architecture
-![Architecture_v3.png](architecture%2FArchitecture_v3.png)
+![Architecture_v4.png](architecture%2FArchitecture_v4.png)
