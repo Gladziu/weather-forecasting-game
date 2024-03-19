@@ -3,7 +3,6 @@ package com.weatherForecasting.backend.infrastructure.controller;
 import com.weatherForecasting.backend.weatherpredictioncrd.CrdOperationResult;
 import com.weatherForecasting.backend.weatherpredictioncrd.WeatherPredictionCrdFacade;
 import com.weatherForecasting.backend.weatherpredictioncrd.dto.WeatherPredictionDto;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,20 +19,17 @@ public class WeatherPredictionCrdController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<CrdOperationResult> addPrediction(@RequestBody WeatherPredictionDto weatherPredictionDTO) {
-        CrdOperationResult crdOperationResult = weatherPredictionCrdFacade.addPrediction(weatherPredictionDTO);
-        return ResponseEntity.ok(crdOperationResult);
+    public CrdOperationResult addPrediction(@RequestBody WeatherPredictionDto weatherPredictionDTO) {
+        return weatherPredictionCrdFacade.addPrediction(weatherPredictionDTO);
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<CrdOperationResult> deletePrediction(@RequestParam UUID id) {
-        CrdOperationResult crdOperationResult = weatherPredictionCrdFacade.deletePrediction(id);
-        return ResponseEntity.ok(crdOperationResult);
+    public CrdOperationResult deletePrediction(@RequestParam UUID id) {
+        return weatherPredictionCrdFacade.deletePrediction(id);
     }
 
     @GetMapping("/show")
-    public ResponseEntity<List<WeatherPredictionDto>> showPrediction(@RequestParam String username) {
-        List<WeatherPredictionDto> weatherPredictionDtos = weatherPredictionCrdFacade.showPredictions(username);
-        return ResponseEntity.ok(weatherPredictionDtos);
+    public List<WeatherPredictionDto> showPrediction(@RequestParam String username) {
+        return weatherPredictionCrdFacade.showPredictions(username);
     }
 }
