@@ -13,9 +13,15 @@
     <version>0.0.1-SNAPSHOT</version>
     <name>backend</name>
     <description>Demo project for Spring Boot</description>
+
     <properties>
         <java.version>17</java.version>
+        <junit-jupiter-api.version>5.10.2</junit-jupiter-api.version>
+        <assertj-core.version>3.25.3</assertj-core.version>
+        <spring-boot-starter-validation.version>3.1.2</spring-boot-starter-validation.version>
+        <mockito-core.version>5.10.0</mockito-core.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -47,8 +53,27 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>3.1.2</version>
+            <version>${spring-boot-starter-validation.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>${junit-jupiter-api.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito-core.version}</version>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 
