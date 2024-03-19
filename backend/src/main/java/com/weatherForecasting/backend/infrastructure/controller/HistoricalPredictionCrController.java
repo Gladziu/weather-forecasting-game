@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class HistoricalWeatherPredictionCrController {
+public class HistoricalPredictionCrController {
     private final HistoricalPredictionCrFacade historicalPredictionCrFacade;
 
-    public HistoricalWeatherPredictionCrController(HistoricalPredictionCrFacade historicalPredictionCrFacade) {
+    public HistoricalPredictionCrController(HistoricalPredictionCrFacade historicalPredictionCrFacade) {
         this.historicalPredictionCrFacade = historicalPredictionCrFacade;
     }
 
