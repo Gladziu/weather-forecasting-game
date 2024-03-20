@@ -20,6 +20,7 @@
         <assertj-core.version>3.25.3</assertj-core.version>
         <spring-boot-starter-validation.version>3.1.2</spring-boot-starter-validation.version>
         <mockito-core.version>5.10.0</mockito-core.version>
+        <jackson-databind.version>2.16.1</jackson-databind.version>
     </properties>
 
     <dependencies>
@@ -54,6 +55,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
             <version>${spring-boot-starter-validation.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
