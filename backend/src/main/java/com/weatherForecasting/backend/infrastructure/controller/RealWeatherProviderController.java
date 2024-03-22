@@ -16,15 +16,15 @@ public class RealWeatherProviderController {
 
 
     @GetMapping("/current")
-    public RealWeatherDto getCurrentWeather(@RequestParam String location) {
-        return realWeatherProviderFacade.getCurrentWeather(location);
+    public RealWeatherDto checkCurrentWeather(@RequestParam String location) {
+        return realWeatherProviderFacade.retrieveCurrentWeather(location);
     }
 
     @GetMapping("/historical")
-    public RealWeatherDto getHistoricalWeather(@RequestParam String location,
-                                               @RequestParam String date,
-                                               @RequestParam int hour) {
-        return realWeatherProviderFacade.getHistoricalWeather(location, date, hour);
+    public RealWeatherDto checkHistoricalWeather(@RequestParam String location,
+                                                 @RequestParam String date,
+                                                 @RequestParam int hour) {
+        return realWeatherProviderFacade.retrieveHistoricalWeather(location, date, hour);
     }
 
 }

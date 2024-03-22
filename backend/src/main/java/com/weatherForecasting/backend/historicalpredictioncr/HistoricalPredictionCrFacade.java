@@ -19,7 +19,7 @@ public class HistoricalPredictionCrFacade {
         this.weatherPredictionCrdFacade = weatherPredictionCrdFacade;
     }
 
-    public List<PredictionHistoryDto> getHistoricalPrediction(String username) {
+    public List<PredictionHistoryDto> retrieveHistoricalPrediction(String username) {
         List<PredictionHistory> predictionHistories = historicalPredictionRepository.findAllByUsername(username);
         return mapToHistoryResultsDto(predictionHistories);
     }

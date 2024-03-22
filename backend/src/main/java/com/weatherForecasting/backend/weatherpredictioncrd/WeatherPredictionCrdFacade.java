@@ -51,7 +51,7 @@ public class WeatherPredictionCrdFacade {
         return new CrdOperationResult(DELETE_ERROR);
     }
 
-    public List<WeatherPredictionDto> getPredictionsInTheDateScope(LocalDate date) {
+    public List<WeatherPredictionDto> retrievePredictionsInTheDateScope(LocalDate date) {
         List<WeatherPrediction> predictions = weatherPredictionRepository.findByForecastDateGreaterThanEqual(date);
         return mapToDTOs(predictions);
     }

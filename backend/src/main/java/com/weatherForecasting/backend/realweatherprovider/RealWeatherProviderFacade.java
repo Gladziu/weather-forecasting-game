@@ -21,7 +21,7 @@ public class RealWeatherProviderFacade {
         this.realWeatherProviderValidator = realWeatherProviderValidator;
     }
 
-    public RealWeatherDto getCurrentWeather(String location) {
+    public RealWeatherDto retrieveCurrentWeather(String location) {
         URI uri = ApiUriGenerator.currentWeatherUri(location, apiKey, apiUrl);
         CurrentWeatherDto currentWeather = realWeatherApiDataReceiver.currentWeatherApiResponse(uri);
         if (currentWeather.isFailure()) {
@@ -33,7 +33,7 @@ public class RealWeatherProviderFacade {
         return mapCurrentWeatherToRealWeatherDto(currentWeather);
     }
 
-    public RealWeatherDto getHistoricalWeather(String location, String date, int hour) {
+    public RealWeatherDto retrieveHistoricalWeather(String location, String date, int hour) {
         ValidationResult validate = realWeatherProviderValidator.validateParameters(date, hour);
         if (validate.isFailure()) {
             ErrorMessage message = validate.message();
@@ -64,7 +64,7 @@ public class RealWeatherProviderFacade {
         return mapCurrentWeatherToLocalTimeDto(currentWeather);
     }
 
-    public WeatherReportDto getWeatherReport(String location) {
+    public WeatherReportDto weatherReport(String location) {
         URI uri = ApiUriGenerator.currentWeatherUri(location, apiKey, apiUrl);
         CurrentWeatherDto currentWeather = realWeatherApiDataReceiver.currentWeatherApiResponse(uri);
         if (currentWeather.isFailure()) {

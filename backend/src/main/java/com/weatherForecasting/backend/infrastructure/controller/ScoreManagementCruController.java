@@ -17,12 +17,12 @@ public class ScoreManagementCruController {
     }
 
     @GetMapping("/scoreboard")
-    public List<ScoreDto> getScoreboard() {
-        return scoreManagementCruFacade.getScoreboard();
+    public List<ScoreDto> showScoreboard() {
+        return scoreManagementCruFacade.retrieveScoreboard();
     }
 
     @GetMapping("/user-score")
-    public int getUserScore(@RequestParam String username) {
-        return scoreManagementCruFacade.getUserScore(username);
+    public int showUserScore(@RequestParam String username) {
+        return scoreManagementCruFacade.retrieveUserScore(username);
     }
 }

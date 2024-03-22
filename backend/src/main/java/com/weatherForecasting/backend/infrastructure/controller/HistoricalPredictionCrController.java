@@ -18,7 +18,7 @@ public class HistoricalPredictionCrController {
 
 
     @GetMapping("/history")
-    public List<PredictionHistoryDto> getHistoricalPrediction(@RequestParam String username) {
-        return historicalPredictionCrFacade.getHistoricalPrediction(username);
+    public List<PredictionHistoryDto> showHistoricalPrediction(@RequestParam String username) {
+        return historicalPredictionCrFacade.retrieveHistoricalPrediction(username);
     }
 }

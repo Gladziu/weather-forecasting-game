@@ -20,7 +20,7 @@ class WeatherComparator {
     public List<CheckedPredictionDto> comparePredictionWithRealWeather(List<WeatherPredictionDto> predictions) {
         List<CheckedPredictionDto> checkedPredictions = new ArrayList<>();
         for (WeatherPredictionDto prediction : predictions) {
-            WeatherReportDto weatherReport = realWeatherProviderFacade.getWeatherReport(prediction.location());
+            WeatherReportDto weatherReport = realWeatherProviderFacade.weatherReport(prediction.location());
             if (!weatherReport.isFailure() && areDatesEqual(prediction, weatherReport)) {
                 checkedPredictions.add(new CheckedPredictionDto(prediction, weatherReport));
             }

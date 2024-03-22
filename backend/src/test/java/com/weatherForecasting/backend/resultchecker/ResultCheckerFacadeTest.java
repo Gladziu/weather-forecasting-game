@@ -30,8 +30,8 @@ class ResultCheckerFacadeTest {
     public void should_not_process_scoring_system_when_none_prediction_is_in_date_scope() {
         //given
         WeatherReportDto weatherReport = new WeatherReportDto(LocalDate.now(), 16, 10, false);
-        when(weatherPredictionCrdFacade.getPredictionsInTheDateScope(any())).thenReturn(Collections.emptyList());
-        when(realWeatherProviderFacade.getWeatherReport(any())).thenReturn(weatherReport);
+        when(weatherPredictionCrdFacade.retrievePredictionsInTheDateScope(any())).thenReturn(Collections.emptyList());
+        when(realWeatherProviderFacade.weatherReport(any())).thenReturn(weatherReport);
         //when
         resultCheckerFacade.processWeatherPredictionResults();
         //then
@@ -44,8 +44,8 @@ class ResultCheckerFacadeTest {
         //given
         WeatherPredictionDto weatherPrediction = new WeatherPredictionDto(UUID.randomUUID(), "joe", "Warsaw", 12, LocalDate.now(), 10, LocalDate.now().minusDays(10));
         WeatherReportDto weatherReport = new WeatherReportDto(LocalDate.now(), 16, 10, false);
-        when(weatherPredictionCrdFacade.getPredictionsInTheDateScope(any())).thenReturn(List.of(weatherPrediction));
-        when(realWeatherProviderFacade.getWeatherReport(any())).thenReturn(weatherReport);
+        when(weatherPredictionCrdFacade.retrievePredictionsInTheDateScope(any())).thenReturn(List.of(weatherPrediction));
+        when(realWeatherProviderFacade.weatherReport(any())).thenReturn(weatherReport);
         //when
         resultCheckerFacade.processWeatherPredictionResults();
         //then
@@ -57,8 +57,8 @@ class ResultCheckerFacadeTest {
         //given
         WeatherPredictionDto weatherPrediction = new WeatherPredictionDto(UUID.randomUUID(), "joe", "Warsaw", 12, LocalDate.now(), 10, LocalDate.now().minusDays(10));
         WeatherReportDto weatherReport = new WeatherReportDto(LocalDate.now(), 12, 10, false);
-        when(weatherPredictionCrdFacade.getPredictionsInTheDateScope(any())).thenReturn(List.of(weatherPrediction));
-        when(realWeatherProviderFacade.getWeatherReport(any())).thenReturn(weatherReport);
+        when(weatherPredictionCrdFacade.retrievePredictionsInTheDateScope(any())).thenReturn(List.of(weatherPrediction));
+        when(realWeatherProviderFacade.weatherReport(any())).thenReturn(weatherReport);
         //when
         resultCheckerFacade.processWeatherPredictionResults();
         //then

@@ -80,7 +80,7 @@ class ScoreManagementCruFacadeTest {
         CheckedPredictionDto checkedPrediction = new CheckedPredictionDto(weatherPrediction, weatherReport);
         scoreManagementCruFacade.saveScoredPoints(List.of(checkedPrediction));
         //when
-        int result = scoreManagementCruFacade.getUserScore("joe");
+        int result = scoreManagementCruFacade.retrieveUserScore("joe");
         //then
         assertThat(result).isEqualTo(50);
     }
@@ -94,7 +94,7 @@ class ScoreManagementCruFacadeTest {
         scoreManagementCruFacade.saveScoredPoints(List.of(checkedPrediction));
         scoreManagementCruFacade.saveScoredPoints(List.of(checkedPrediction));
         //when
-        int result = scoreManagementCruFacade.getUserScore("joe");
+        int result = scoreManagementCruFacade.retrieveUserScore("joe");
         //then
         assertThat(result).isEqualTo(100);
     }
@@ -102,7 +102,7 @@ class ScoreManagementCruFacadeTest {
     public void should_return_empty_score_board_when_there_is_no_score() {
         //given
         //when
-        List<ScoreDto> result = scoreManagementCruFacade.getScoreboard();
+        List<ScoreDto> result = scoreManagementCruFacade.retrieveScoreboard();
         //then
         assertThat(result).isEmpty();
     }
@@ -115,7 +115,7 @@ class ScoreManagementCruFacadeTest {
         CheckedPredictionDto checkedPrediction = new CheckedPredictionDto(weatherPrediction, weatherReport);
         scoreManagementCruFacade.saveScoredPoints(List.of(checkedPrediction));
         //when
-        List<ScoreDto> result = scoreManagementCruFacade.getScoreboard();
+        List<ScoreDto> result = scoreManagementCruFacade.retrieveScoreboard();
         //then
         assertThat(result).isNotEmpty();
     }

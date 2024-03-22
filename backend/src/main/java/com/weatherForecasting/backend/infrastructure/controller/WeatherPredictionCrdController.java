@@ -19,7 +19,7 @@ public class WeatherPredictionCrdController {
     }
 
     @PostMapping("/add")
-    public CrdOperationResult addPrediction(@RequestBody WeatherPredictionDto weatherPredictionDTO) {
+    public CrdOperationResult inputPrediction(@RequestBody WeatherPredictionDto weatherPredictionDTO) {
         return weatherPredictionCrdFacade.addPrediction(weatherPredictionDTO);
     }
 

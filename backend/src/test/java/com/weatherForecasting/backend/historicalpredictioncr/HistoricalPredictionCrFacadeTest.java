@@ -28,7 +28,7 @@ class HistoricalPredictionCrFacadeTest {
     public void should_return_empty_history_of_user_predictions_when_given_user_has_no_score() {
         //given
         //when
-        List<PredictionHistoryDto> result = historicalPredictionCrFacade.getHistoricalPrediction("joe");
+        List<PredictionHistoryDto> result = historicalPredictionCrFacade.retrieveHistoricalPrediction("joe");
         //then
         assertThat(result).isEmpty();
     }
@@ -43,7 +43,7 @@ class HistoricalPredictionCrFacadeTest {
         historyRepositoryForTest.database.put(UUID.randomUUID(), predictionHistory);
         historyRepositoryForTest.database.put(UUID.randomUUID(), predictionHistory);
         //when
-        List<PredictionHistoryDto> result = historicalPredictionCrFacade.getHistoricalPrediction("joe");
+        List<PredictionHistoryDto> result = historicalPredictionCrFacade.retrieveHistoricalPrediction("joe");
         //then
         assertThat(result.size()).isEqualTo(2);
     }

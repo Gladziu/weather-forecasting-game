@@ -21,12 +21,12 @@ public class ScoreManagementCruFacade {
         this.scoreAssigner = scoreAssigner;
     }
 
-    public List<ScoreDto> getScoreboard() {
+    public List<ScoreDto> retrieveScoreboard() {
         List<Score> scores = scoreManagementRepository.findAll();
         return mapToResultsDto(scores);
     }
 
-    public int getUserScore(String username) {
+    public int retrieveUserScore(String username) {
         Optional<Score> userResult = scoreManagementRepository.findByUsername(username);
         return createUserScore(userResult);
     }

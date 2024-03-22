@@ -28,7 +28,7 @@ public class ResultCheckerFacade {
 
     public void processWeatherPredictionResults() {
         LocalDate cutoffDate = LocalDate.now(ZoneId.of(LATEST_POSSIBLE_DATE));
-        List<WeatherPredictionDto> predictions = weatherPredictionCrdFacade.getPredictionsInTheDateScope(cutoffDate);
+        List<WeatherPredictionDto> predictions = weatherPredictionCrdFacade.retrievePredictionsInTheDateScope(cutoffDate);
         if (!predictions.isEmpty()) {
             List<CheckedPredictionDto> checkedPredictions = weatherComparator.comparePredictionWithRealWeather(predictions);
             List<PredictionScoreDto> predictionsWithScore = scoreManagementCruFacade.saveScoredPoints(checkedPredictions);

@@ -25,7 +25,7 @@ class RealWeatherProviderFacadeTest {
         CurrentWeatherDto currentRealWeather = ApiResponseCreatorForTest.currentWeatherLocationError();
         when(realWeatherApiDataReceiver.currentWeatherApiResponse(any())).thenReturn(currentRealWeather);
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getCurrentWeather("Invalid loc");
+        RealWeatherDto result = realWeatherProviderFacade.retrieveCurrentWeather("Invalid loc");
         //then
         assertThat(result.error().message()).isEqualTo("location not found");
     }
@@ -36,7 +36,7 @@ class RealWeatherProviderFacadeTest {
         CurrentWeatherDto currentRealWeather = ApiResponseCreatorForTest.currentWeather();
         when(realWeatherApiDataReceiver.currentWeatherApiResponse(any())).thenReturn(currentRealWeather);
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getCurrentWeather("Warszawa");
+        RealWeatherDto result = realWeatherProviderFacade.retrieveCurrentWeather("Warszawa");
         //then
         assertThat(result.city()).isEqualTo("Warszawa");
     }
@@ -47,7 +47,7 @@ class RealWeatherProviderFacadeTest {
         LocalDate localDateInFuture = LocalDate.now().plusDays(5);
         String date = localDateInFuture.toString();
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getHistoricalWeather("Warszawa", date, 2);
+        RealWeatherDto result = realWeatherProviderFacade.retrieveHistoricalWeather("Warszawa", date, 2);
         //then
         assertThat(result.error().message()).isEqualTo("date out of range");
     }
@@ -58,7 +58,7 @@ class RealWeatherProviderFacadeTest {
         LocalDate localDateInPast = LocalDate.now().minusDays(15);
         String date = localDateInPast.toString();
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getHistoricalWeather("Warszawa", date, 2);
+        RealWeatherDto result = realWeatherProviderFacade.retrieveHistoricalWeather("Warszawa", date, 2);
         //then
         assertThat(result.error().message()).isEqualTo("date out of range");
     }
@@ -69,7 +69,7 @@ class RealWeatherProviderFacadeTest {
         LocalDate historicalDate = LocalDate.now().minusDays(3);
         String date = historicalDate.toString();
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getHistoricalWeather("Warszawa", date, 28);
+        RealWeatherDto result = realWeatherProviderFacade.retrieveHistoricalWeather("Warszawa", date, 28);
         //then
         assertThat(result.error().message()).isEqualTo("hour out of range");
     }
@@ -82,7 +82,7 @@ class RealWeatherProviderFacadeTest {
         HistoricalWeatherDto historicalRealWeather = ApiResponseCreatorForTest.historicalWeatherLocationError();
         when(realWeatherApiDataReceiver.historicalWeatherResponse(any())).thenReturn(historicalRealWeather);
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getHistoricalWeather("Warszawa", date, 2);
+        RealWeatherDto result = realWeatherProviderFacade.retrieveHistoricalWeather("Warszawa", date, 2);
         //then
         assertThat(result.error().message()).isEqualTo("location not found");
     }
@@ -95,7 +95,7 @@ class RealWeatherProviderFacadeTest {
         HistoricalWeatherDto historicalRealWeather = ApiResponseCreatorForTest.historicalWeather();
         when(realWeatherApiDataReceiver.historicalWeatherResponse(any())).thenReturn(historicalRealWeather);
         //when
-        RealWeatherDto result = realWeatherProviderFacade.getHistoricalWeather("Warszawa", date, 2);
+        RealWeatherDto result = realWeatherProviderFacade.retrieveHistoricalWeather("Warszawa", date, 2);
         //then
         assertThat(result.temperature()).isEqualTo(5);
     }
