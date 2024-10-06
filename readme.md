@@ -31,11 +31,9 @@ the given prediction. This is the main principle of the game, but it also has ma
 
 ## Tech stack
 
-#### Code: 
-Java, Spring, Hibernate, MySQL
+Code: Java, Spring, Hibernate, MySQL
 
-#### Tests: 
-Junit, Mockito
+Tests: Junit, Mockito
 
 ## C3 Diagram
 
