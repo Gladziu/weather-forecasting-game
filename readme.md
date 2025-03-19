@@ -23,10 +23,10 @@ the given prediction. This is the main principle of the game, but it also has ma
 
 - Java with Spring boot
 - Facade design pattern
-- Modular monolith hexagonal architecture
+- Modular monolith
+- Connection to the external weather API - www.weatherapi.com
 - MySQL database for Weather Prediction, Score and Historical Weather Prediction
 - Scheduling for results of a comparison between the weather prediction and the current real weather
-- Connection to the external weather API - www.weatherapi.com
 - Unit tests
 
 ## Tech stack

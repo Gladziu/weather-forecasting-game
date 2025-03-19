@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 class HistoricalPredictionCrFacadeTest {
     HistoricalPredictionRepositoryForTestImpl historyRepositoryForTest = new HistoricalPredictionRepositoryForTestImpl();
     WeatherPredictionCrdFacade weatherPredictionCrdFacade = Mockito.mock(WeatherPredictionCrdFacade.class);
-    HistoricalPredictionCrFacade historicalPredictionCrFacade = new HistoricalPredictionConfiguration().historicalPredictionCrFacade(historyRepositoryForTest, weatherPredictionCrdFacade);
+    HistoricalPredictionCrFacade historicalPredictionCrFacade = new HistoricalPredictionConfiguration().historicalPredictionCrFacadeForTest(historyRepositoryForTest, weatherPredictionCrdFacade);
 
     @Test
     public void should_return_empty_history_of_user_predictions_when_given_user_has_no_score() {

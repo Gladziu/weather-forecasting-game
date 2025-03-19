@@ -23,7 +23,7 @@ class RealWeatherProviderValidator {
         if (!hasUserGaveCorrectPastDate(date)) {
             errors.add(DATE_OUT_OF_RANGE);
         }
-        if (!hasUserHaveHourInRange(hour)) {
+        if (!hasUserGaveHourInRange(hour)) {
             errors.add(HOUR_OUT_OF_RANGE);
         }
         if (errors.isEmpty()) {
@@ -51,7 +51,7 @@ class RealWeatherProviderValidator {
         }
     }
 
-    private boolean hasUserHaveHourInRange(int hour) {
+    private boolean hasUserGaveHourInRange(int hour) {
         return hour >= MIN_HOUR && hour <= MAX_HOUR;
     }
 
